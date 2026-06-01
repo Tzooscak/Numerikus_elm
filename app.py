@@ -1,124 +1,78 @@
 import streamlit as st
-import numpy as np
 
-# --- 1. OLDAL BEÁLLÍTÁSAI ---
-st.set_page_config(
-    page_title="Numerikus Módszerek",
-    page_icon="🧮",
-    layout="wide"
-)
+# Oldal beállításai
+st.set_page_config(page_title="Numerikus Módszerek - Tananyag", page_icon="📚", layout="centered")
 
-def main():
-    # --- 2. OLDALSÁV (NAVIGÁCIÓ) ---
-    st.sidebar.title("🧮 Témakörök")
+st.title("📚 Numerikus Módszerek: 1. Előadás")
+st.markdown("Ezen az oldalon a numerikus módszerek alapfogalmait, a lebegőpontos számábrázolást és a hibaszámítás alaptételeit sajátíthatod el.")
+
+st.divider()
+
+# --- 1. Szekció: Algoritmusok ---
+st.header("1. Algoritmusok és Stabilitás")
+
+with st.container():
+    st.info("**Definíció: Numerikus algoritmus**\n\nA numerikus algoritmus aritmetikai és logikai műveletek véges sorozata.")
     
-    # A te listád alapján kialakított menüpontok
-    menu_options = [
-        "🏠 Kezdőlap",
-        "1️⃣ Nemlineáris egyenletek",
-        "2️⃣ Polinom interpoláció",
-        "3️⃣ Legkisebb négyzetek módszere",
-        "4️⃣ Numerikus integrálás"
-    ]
+    st.info("**Definíció: Algoritmus stabilitása**\n\nA numerikus algoritmus stabil, ha létezik olyan $C>0$ konstans, hogy a kétféle $B_1, B_2$ bemenő adatból kapott $K_1, K_2$ kimenő adatokra teljesül a következő egyenlőtlenség:")
+    st.latex(r"||K_{1}-K_{2}||\le C\cdot||B_{1}-B_{2}||")
+
+st.divider()
+
+# --- 2. Szekció: Lebegőpontos számok ---
+st.header("2. Lebegőpontos számok és Gépi számok")
+
+with st.container():
+    st.info("**Definíció: Normalizált lebegőpontos szám**\n\nLegyen:")
+    st.latex(r"m=\sum_{i=1}^{t}m_{i}\cdot2^{-i}, \quad \text{ahol } t\in\mathbb{N}, m_1 = 1, m_{i}\in\{0,1\}")
+    st.markdown("Ekkor az alábbi alakú számot normalizált lebegőpontos számnak nevezzük:")
+    st.latex(r"a=\pm m\cdot2^{k} \quad (k\in\mathbb{Z})")
     
-    choice = st.sidebar.radio("Válassz egy témát:", menu_options)
+    st.info("**Definíció: Gépi számok halmaza ($M$)**")
+    st.latex(r"M(t,k^{-},k^{+}) = \left\{ a=\pm2^{k}\cdot\sum_{i=1}^{t}m_{i}\cdot2^{-i} : k^{-}\le k\le k^{+}, m_{i}\in\{0,1\}, m_{1}=1 \right\} \cup \{0\}")
+
+st.divider()
+
+# --- 3. Szekció: Hibaszámítás ---
+st.header("3. Hibaszámítás és Hibaterjedés")
+
+with st.container():
+    st.info("**Definíció: Input függvény ($fl$)**\n\nAz $fl: \mathbb{R}_{M}\rightarrow M$ függvényt input függvénynek nevezzük, ha:")
+    st.latex(r"fl(x) = \begin{cases} 0, & \text{ha } |x|<\epsilon_{0} \\ \tilde{x}, & \text{ha } \epsilon_{0}\le|x|\le M_{\infty} \end{cases}")
     
-    st.sidebar.divider()
-    st.sidebar.info("Készült a Numerikus módszerek vizsgakövetelményei alapján.")
+    st.success("**Tétel: Input hiba**\n\nMinden $x\in\mathbb{R}_{M}$ esetén:")
+    st.latex(r"|x-fl(x)| \le \begin{cases} \epsilon_{0} \\ \frac{1}{2}|x|\cdot\epsilon_{1} \end{cases}")
 
-    # --- 3. TARTALOM MEGJELENÍTÉSE ---
+    st.info("**Definíció: Hibák jellemzése**\n\nLegyen $A$ egy pontos érték, $a$ pedig egy közelítő értéke.")
+    st.markdown("- **Pontos hiba:** $\\Delta a := A - a$")
+    st.markdown("- **Abszolút hiba:** $|\\Delta a| := |A - a|$")
+    st.markdown("- **Relatív hiba:** $\\delta a := \\frac{\\Delta a}{A} \\approx \\frac{\\Delta a}{a}$")
 
-    # -- KEZDŐLAP --
-    if choice == "🏠 Kezdőlap":
-        st.title("Numerikus Módszerek Alkalmazás")
-        st.write("Válassz a bal oldali menüből, hogy megtekintsd az adott témakör elméletét és interaktív példáit!")
-        
-        st.subheader("A tananyag tartalma:")
-        st.markdown("""
-        * **Nemlineáris egyenletek:** Fixpont iteráció, Banach-féle tétel, Newton-módszer.
-        * **Interpoláció:** Lagrange- és Newton-féle alak.
-        * **Legkisebb négyzetek:** Lineáris és nemlineáris regresszió alapjai.
-        * **Integrálás:** Newton-Cotes, érintő, trapéz és Simpson formulák.
-        """)
+    st.success("**Tétel: Az alapműveletek hibakorlátai**")
+    st.markdown("**Abszolút hibakorlátok:**")
+    st.latex(r"\Delta_{a\pm b} = \Delta_{a} + \Delta_{b}")
+    st.latex(r"\Delta_{a\cdot b} = |b|\cdot\Delta_{a} + |a|\cdot\Delta_{b}")
+    st.latex(r"\Delta_{a/b} = \frac{|b|\cdot\Delta_{a} + |a|\cdot\Delta_{b}}{b^{2}}")
+    st.markdown("**Relatív hibakorlátok:**")
+    st.latex(r"\delta_{a\cdot b} = \delta_{a} + \delta_{b}")
+    st.latex(r"\delta_{a/b} = \delta_{a} + \delta_{b}")
 
-    # -- 1. TÉMA: NEMLINEÁRIS EGYENLETEK --
-    elif choice == "1️⃣ Nemlineáris egyenletek":
-        st.title("Nemlineáris egyenletek megoldása")
-        
-        tab1, tab2 = st.tabs(["Fixpont iterációk", "Newton-módszer"])
-        
-        with tab1:
-            st.header("Fixpont iterációk és Kontrakció")
-            st.write("A kontrakció fogalma és a Banach-féle fixponttétel az $[a; b]$ intervallumon.")
-            # Példa képlet megjelenítésére Streamlitben
-            st.latex(r"x_{k+1} = \Phi(x_k)")
-            st.info("Ide jöhet az elméleti leírás és egy interaktív Python példa, ahol a felhasználó megadhatja az iterációk számát.")
-            
-        with tab2:
-            st.header("Newton-módszer (Érintőmódszer)")
-            st.write("Iteratív módszer a gyökkeresésre.")
-            st.latex(r"x_{k+1} = x_k - \frac{f(x_k)}{f'(x_k)}")
-            # Ide jöhetne egy gomb, ami kiszámol egy lépést
-            if st.button("Szimulálj egy iterációs lépést!"):
-                st.success("Iteráció végrehajtva! (Itt majd a kódod fut le)")
+st.divider()
 
-    # -- 2. TÉMA: POLINOM INTERPOLÁCIÓ --
-    elif choice == "2️⃣ Polinom interpoláció":
-        st.title("Polinom interpoláció")
-        st.write("Adott pontokra illeszkedő polinom keresése.")
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.subheader("Lagrange-féle alak")
-            st.write("Alappolinomok segítségével felírt interpoláció.")
-            st.latex(r"L_n(x) = \sum_{i=0}^{n} y_i \cdot \ell_i(x)")
-            
-        with col2:
-            st.subheader("Newton-féle alak")
-            st.write("Osztott differenciákra épülő felírás.")
-            st.latex(r"N_n(x) = f(x_0) + \sum_{i=1}^{n} f[x_0, \dots, x_i] \prod_{j=0}^{i-1} (x - x_j)")
+# --- 4. Szekció: Függvényértékek hibája ---
+st.header("4. Függvényérték hibája és Kondíciószám")
 
-    # -- 3. TÉMA: LEGKISEBB NÉGYZETEK --
-    elif choice == "3️⃣ Legkisebb négyzetek módszere":
-        st.title("Legkisebb négyzetek módszere")
-        
-        st.subheader("Fogalma")
-        st.write("Túlhatározott egyenletrendszerek 'legjobb' közelítő megoldása, ahol a hibák négyzetösszege minimális.")
-        
-        st.subheader("Megoldási módszere")
-        st.write("A normálegyenlet felírása:")
-        st.latex(r"A^T A x = A^T b")
-        
-        st.info("Itt érdemes lenne egy interaktív grafikont (pl. `st.pyplot`) megjeleníteni, ami egy ponthalmazra egyenest illeszt.")
+with st.container():
+    st.success("**1. Tétel: A függvényérték hibája (Első deriváltal)**\n\nHa $f\in C^{1}(k_{\Delta_{a}}(a))$, akkor:")
+    st.latex(r"\Delta_{f(a)} = M_{1}\cdot\Delta_{a}")
+    st.markdown("Ahol $M_{1}=max\\{|f^{\\prime}(\\xi)|:\\xi\\in k_{\\Delta_{a}}(a)\\}$")
 
-    # -- 4. TÉMA: NUMERIKUS INTEGRÁLÁS --
-    elif choice == "4️⃣ Numerikus integrálás":
-        st.title("Numerikus integrálás")
-        st.write("Interpolációs típusú kvadratúra formulák.")
-        
-        # Egy harmonika (expander) a formulák részletezéséhez
-        with st.expander("Newton-Cotes formulák és pontosságuk"):
-            st.write("Az érintő, trapéz és Simpson formula alapjai.")
-            
-        st.subheader("Alapformulák")
-        colA, colB, colC = st.columns(3)
-        
-        with colA:
-            st.markdown("**Érintő (Középponti) formula**")
-            st.latex(r"\approx (b-a)f\left(\frac{a+b}{2}\right)")
-            
-        with colB:
-            st.markdown("**Trapéz formula**")
-            st.latex(r"\approx \frac{b-a}{2}(f(a)+f(b))")
-            
-        with colC:
-            st.markdown("**Simpson formula**")
-            st.latex(r"\approx \frac{b-a}{6}\left(f(a)+4f\left(\frac{a+b}{2}\right)+f(b)\right)")
-            
-        st.divider()
-        st.subheader("Összetett formulák és pontosságuk")
-        st.write("A részintervallumokra bontott integrálási szabályok hibájának elemzése.")
+    st.success("**2. Tétel: A függvényérték hibája (Második deriváltal)**\n\nHa $f\in C^{2}(k_{\Delta_{a}}(a))$, akkor:")
+    st.latex(r"\Delta_{f(a)} = |f^{\prime}(a)|\Delta_{a} + \frac{M_{2}}{2}\cdot\Delta_{a}^{2}")
+    st.markdown("Ahol $M_{2}=max\\{|f^{\\prime\\prime}(\\xi)|:\\xi\\in k_{\\Delta_{a}}(a)\\}$")
 
-if __name__ == "__main__":
-    main()
+    st.info("**Definíció: Kondíciószám**\n\nAz $f$ függvény $a$-beli kondíciószámának az alábbi mennyiséget nevezzük:")
+    st.latex(r"c(f,a) = \frac{|a||f^{\prime}(a)|}{|f(a)|}")
+
+st.markdown("---")
+st.caption("Készült a Numerikus Módszerek 1. előadásának anyaga alapján.")
